@@ -6,7 +6,6 @@ import com.binance.api.client.exception.BinanceApiException;
 import com.binance.api.client.security.AuthenticationInterceptor;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 import retrofit2.Call;
@@ -17,6 +16,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,8 +32,18 @@ public class BinanceApiServiceGenerator {
         Dispatcher dispatcher = new Dispatcher();
         dispatcher.setMaxRequestsPerHost(500);
         dispatcher.setMaxRequests(500);
+
+        java.net.Proxy proxy = null;
+        if (System.getProperty("http.proxyHost") != null) {
+            String proxyHost = System.getProperty("http.proxyHost");
+            String proxyPort = System.getProperty("http.proxyPort","3128");
+
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)));
+        }
+
         sharedClient = new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
+                .proxy(proxy)
                 .pingInterval(20, TimeUnit.SECONDS)
                 .build();
     }
