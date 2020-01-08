@@ -10,17 +10,20 @@ public class BinanceApiConstants {
   /**
    * REST API base URL.
    */
-  public static final String API_BASE_URL = "https://api.binance.com";
+  public static final String API_BASE_URL_TEMPLATE = "https://api.binance.REGION";
+  public static String API_BASE_URL;
 
   /**
    * Streaming API base URL.
    */
-  public static final String WS_API_BASE_URL = "wss://stream.binance.com:9443/ws";
+  public static final String WS_API_BASE_URL_TEMPLATE = "wss://stream.binance.REGION:9443/ws";
+  public static String WS_API_BASE_URL;
 
   /**
    * Asset info base URL.
    */
-  public static final String ASSET_INFO_API_BASE_URL = "https://www.binance.com/";
+  public static final String ASSET_INFO_API_BASE_URL_TEMPLATE = "https://www.binance.REGION/";
+  public static String ASSET_INFO_API_BASE_URL;
 
   /**
    * HTTP Header to be used for API-KEY authentication.
@@ -50,4 +53,13 @@ public class BinanceApiConstants {
    *  - Example ToStringStyle.JSON_STYLE
    */
   public static ToStringStyle TO_STRING_BUILDER_STYLE = ToStringStyle.SHORT_PREFIX_STYLE;
+
+  public static void setRegion(String region) {
+    BinanceApiConstants.API_BASE_URL = BinanceApiConstants.API_BASE_URL_TEMPLATE.replace(".REGION", region);
+    BinanceApiConstants.WS_API_BASE_URL = BinanceApiConstants.WS_API_BASE_URL_TEMPLATE.replace(".REGION", region);
+    BinanceApiConstants.ASSET_INFO_API_BASE_URL = BinanceApiConstants.ASSET_INFO_API_BASE_URL_TEMPLATE.replace(".REGION", region);
+  }
+  static {
+    setRegion(".com");
+  }
 }
