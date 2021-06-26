@@ -39,10 +39,9 @@ public class UserDataUpdateEventDeserializer extends JsonDeserializer<UserDataUp
     userDataUpdateEvent.setEventType(userDataUpdateEventType);
     userDataUpdateEvent.setEventTime(eventTime);
 
-    if (userDataUpdateEventType == UserDataUpdateEventType.ACCOUNT_UPDATE ||
-        userDataUpdateEventType == UserDataUpdateEventType.ACCOUNT_POSITION_UPDATE) {
+    if (userDataUpdateEventType == UserDataUpdateEventType.ACCOUNT_POSITION_UPDATE) {
       AccountUpdateEvent accountUpdateEvent = getUserDataUpdateEventDetail(json, AccountUpdateEvent.class, mapper);
-      userDataUpdateEvent.setAccountUpdateEvent(accountUpdateEvent);
+      userDataUpdateEvent.setOutboundAccountPositionUpdateEvent(accountUpdateEvent);
     } else if (userDataUpdateEventType == UserDataUpdateEventType.BALANCE_UPDATE) {
       BalanceUpdateEvent balanceUpdateEvent = getUserDataUpdateEventDetail(json, BalanceUpdateEvent.class, mapper);
       userDataUpdateEvent.setBalanceUpdateEvent(balanceUpdateEvent);
