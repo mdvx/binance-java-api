@@ -1,20 +1,7 @@
 package com.binance.api.client;
 
-import com.binance.api.client.domain.account.Account;
-import com.binance.api.client.domain.account.DepositAddress;
-import com.binance.api.client.domain.account.DepositHistory;
-import com.binance.api.client.domain.account.NewOrder;
-import com.binance.api.client.domain.account.NewOrderResponse;
-import com.binance.api.client.domain.account.Order;
-import com.binance.api.client.domain.account.Trade;
-import com.binance.api.client.domain.account.TradeHistoryItem;
-import com.binance.api.client.domain.account.WithdrawHistory;
-import com.binance.api.client.domain.account.WithdrawResult;
-import com.binance.api.client.domain.account.request.AllOrdersRequest;
-import com.binance.api.client.domain.account.request.CancelOrderRequest;
-import com.binance.api.client.domain.account.request.CancelOrderResponse;
-import com.binance.api.client.domain.account.request.OrderRequest;
-import com.binance.api.client.domain.account.request.OrderStatusRequest;
+import com.binance.api.client.domain.account.*;
+import com.binance.api.client.domain.account.request.*;
 import com.binance.api.client.domain.general.ExchangeInfo;
 import com.binance.api.client.domain.general.Asset;
 import com.binance.api.client.domain.market.AggTrade;
@@ -203,6 +190,38 @@ public interface BinanceApiRestClient {
   List<Order> getAllOrders(AllOrdersRequest orderRequest);
 
   /**
+   * Send in a new OCO;
+   *
+   * @param oco
+   *            the OCO to submit
+   * @return a response containing details about the newly placed OCO.
+   */
+  NewOCOResponse newOCO(NewOCO oco);
+
+  /**
+   * Cancel an entire Order List
+   *
+   * @return
+   */
+  CancelOrderListResponse cancelOrderList(CancelOrderListRequest cancelOrderListRequest);
+
+  /**
+   * Check an order list status
+   *
+   * @param orderListStatusRequest
+   * @return an orderList
+   */
+  OrderList getOrderListStatus(OrderListStatusRequest orderListStatusRequest);
+
+  /**
+   * Get all list os orders
+   *
+   * @param allOrderListRequest
+   * @return
+   */
+  List<OrderList> getAllOrderList(AllOrderListRequest allOrderListRequest);
+
+  /**
    * Get current account information.
    */
   Account getAccount(Long recvWindow, Long timestamp);
@@ -238,6 +257,8 @@ public interface BinanceApiRestClient {
    * @return a list of trades
    */
   List<Trade> getMyTrades(String symbol);
+  
+  List<Trade> getMyTrades(String symbol, Long fromId);
 
   /**
    * Submit a withdraw request.
@@ -253,6 +274,12 @@ public interface BinanceApiRestClient {
   WithdrawResult withdraw(String asset, String address, String amount, String name, String addressTag);
 
   /**
+   * Conver a list of assets to BNB
+   * @param asset the list of assets to convert
+   */
+  DustTransferResponse dustTranfer(List<String> asset);
+
+  /**
    * Fetch account deposit history.
    *
    * @return deposit history, containing a list of deposits
@@ -265,6 +292,13 @@ public interface BinanceApiRestClient {
    * @return withdraw history, containing a list of withdrawals
    */
   WithdrawHistory getWithdrawHistory(String asset);
+
+  /**
+   * Fetch sub-account transfer history.
+   *
+   * @return sub-account transfers
+   */
+  List<SubAccountTransfer> getSubAccountTransfers();
 
   /**
    * Fetch deposit address.

@@ -24,7 +24,7 @@ public class UserDataUpdateEvent {
 
   private long eventTime;
 
-  private AccountUpdateEvent accountUpdateEvent;
+  private AccountUpdateEvent outboundAccountPositionUpdateEvent;
 
   private BalanceUpdateEvent balanceUpdateEvent;
 
@@ -46,12 +46,20 @@ public class UserDataUpdateEvent {
     this.eventTime = eventTime;
   }
 
+  /**
+   * @Deprecated: left in for backwards compatibility. Use getOutboundAccountPositionUpdateEvent() instead, as that is what the Binance API documentation calls it.
+   */
+  @Deprecated
   public AccountUpdateEvent getAccountUpdateEvent() {
-    return accountUpdateEvent;
+    return outboundAccountPositionUpdateEvent;
   }
 
-  public void setAccountUpdateEvent(AccountUpdateEvent accountUpdateEvent) {
-    this.accountUpdateEvent = accountUpdateEvent;
+  public AccountUpdateEvent getOutboundAccountPositionUpdateEvent() {
+    return outboundAccountPositionUpdateEvent;
+  }
+
+  public void setOutboundAccountPositionUpdateEvent(AccountUpdateEvent accountUpdateEvent) {
+    this.outboundAccountPositionUpdateEvent = accountUpdateEvent;
   }
 
   public BalanceUpdateEvent getBalanceUpdateEvent() {
@@ -75,10 +83,8 @@ public class UserDataUpdateEvent {
     ToStringBuilder sb = new ToStringBuilder(this, BinanceApiConstants.TO_STRING_BUILDER_STYLE)
         .append("eventType", eventType)
         .append("eventTime", eventTime);
-    if (eventType == UserDataUpdateEventType.ACCOUNT_UPDATE) {
-      sb.append("accountUpdateEvent", accountUpdateEvent);
-    } else if (eventType == UserDataUpdateEventType.ACCOUNT_POSITION_UPDATE) {
-      sb.append("accountPositionUpdateEvent", accountUpdateEvent);
+    if (eventType == UserDataUpdateEventType.ACCOUNT_POSITION_UPDATE) {
+      sb.append("outboundAccountPositionUpdateEvent", outboundAccountPositionUpdateEvent);
     } else if (eventType == UserDataUpdateEventType.BALANCE_UPDATE) {
       sb.append("balanceUpdateEvent", balanceUpdateEvent);
     } else {
@@ -88,9 +94,11 @@ public class UserDataUpdateEvent {
   }
 
   public enum UserDataUpdateEventType {
-    ACCOUNT_UPDATE("outboundAccountInfo"),
+    /** Corresponds to "outboundAccountPosition" events. */
     ACCOUNT_POSITION_UPDATE("outboundAccountPosition"),
+    /** Corresponds to "balanceUpdate" events. */
     BALANCE_UPDATE("balanceUpdate"),
+    /** Corresponds to "executionReport" events. */
     ORDER_TRADE_UPDATE("executionReport"),
     ;
 
@@ -105,9 +113,7 @@ public class UserDataUpdateEvent {
     }
 
     public static UserDataUpdateEventType fromEventTypeId(String eventTypeId) {
-      if (ACCOUNT_UPDATE.eventTypeId.equals(eventTypeId)) {
-        return ACCOUNT_UPDATE;
-      } else if (ORDER_TRADE_UPDATE.eventTypeId.equals(eventTypeId)) {
+      if (ORDER_TRADE_UPDATE.eventTypeId.equals(eventTypeId)) {
         return ORDER_TRADE_UPDATE;
       } else if (ACCOUNT_POSITION_UPDATE.eventTypeId.equals(eventTypeId)) {
         return ACCOUNT_POSITION_UPDATE;
